@@ -43,7 +43,7 @@ public class InventoryApps extends JApplet {
                 } catch (Exception e) {
                 }
                 
-                JFrame frame = new JFrame("JavaFX 2 in Swing");
+                JFrame frame = new JFrame("Log in into Inventory System");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 
                 JApplet applet = new InventoryApps();
@@ -77,12 +77,17 @@ public class InventoryApps extends JApplet {
     
     private void createScene() {
         Button btn = new Button();
-        btn.setText("Say 'Hello World'");
+        btn.setText("Do you want to start the inventory application Click Here'");
         btn.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
+                
+                // start the login form from here 
+                //System.out.println("Hello World!");
+                // testing the login form 
+             LoginForm logForm   = new LoginForm();
+             logForm.setVisible(true);
             }
         });
         StackPane root = new StackPane();
