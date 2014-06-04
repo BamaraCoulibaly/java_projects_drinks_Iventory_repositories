@@ -6,21 +6,41 @@
 
 package inventoryapps;
 import java.awt.Frame;
-import javax.swing.JFrame;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+//import java.sql.ResultSetMetaData;
+//import javax.swing.JFrame;
 /**
  *
  * @author bamaragcoulibaly
  */
 public class LoginForm extends javax.swing.JFrame {
+   Connection con;
 
     /**
      * Creates new form LoginForm
      */
     public LoginForm() {
+        
         initComponents();
+        try {
+              
+            System.out.println("creating the login form");
+            // CREATE USERTABLE TABLE
+            isUserTableDoesNOTExistsCreateOne();
+             
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
         // set the frame to full screen 
         this.pack();
-        this.setExtendedState(Frame.MAXIMIZED_BOTH);
+       // this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.setVisible(true);
     }
     
@@ -133,20 +153,61 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        //test need to be amende after 
-        managerMainFormUI managerMainFormUI = new managerMainFormUI();
-        managerMainFormUI.setVisible(true);
-        this.dispose();
-                
+        
+      
                 
         
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
+    private void isUserTableDoesNOTExistsCreateOne()throws SQLException{
+        con = null;
+        try{
+        
+        
+        if(con != null){
+           System.out.println ("testing the connection");
+            boolean tableExists = false;
+            String tableNameString ="USERTABLE";
+            
+            DatabaseMetaData meta = con.getMetaData();
+            try (ResultSet res = meta.getTables(null, null, null, new String[] {"TABLE"}) //return all tables
+            ) {
+                System.out.println("toString called on the res"+res.toString());
+                while(res.next()){
+                    if(res.getString("TABLE_NAME").toLowerCase().equals(tableNameString.toLowerCase())){
+                        // DO NOTHING AND SET THE BOOLEAN tableExists to true;
+                        tableExists = true;
+                    }
+                }
+                if ( tableExists== false){
+                    try ( // CREATE TABLE USERTABLE
+                            Statement st = con.createStatement()) {
+                       
+                        st.executeUpdate(" create table USERTABLE (USERID INTEGER not null primary key,FIRSTNAME VARCHAR(30),SURNAME VARCHAR(30),ADDRESS VARCHAR(60),CONTACT VARCHAR(12),ROLE VARCHAR(9),USERNAME VARCHAR(30),PASSWORD VARCHAR(20))");
+                        tableExists = true;
+                    }
+                    
+                    
+                    
+                }
+            }
+            con.close();
+            
+        }
+     
+    }catch (Exception except)
+        {
+            except.printStackTrace();
+        }
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
+       /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -170,10 +231,8 @@ public class LoginForm extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LoginForm().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new LoginForm().setVisible(true);
         });
     }
 
